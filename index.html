@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoulStream - Movie Upload Portal</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-film"></i>
+                <h1>SoulStream</h1>
+            </div>
+            <p class="subtitle">Upload your movies to your personal media server</p>
+        </header>
+
+        <main class="main-content">
+            <div class="upload-section">
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3>Drag & Drop your movie files here</h3>
+                    <p>or click to browse</p>
+                    <input type="file" id="fileInput" multiple accept=".mp4,.mkv,.avi,.mov,.wmv,.flv,.webm" style="display: none;">
+                </div>
+
+                <div class="upload-controls">
+                    <button id="selectFilesBtn" class="btn btn-primary">
+                        <i class="fas fa-folder-open"></i>
+                        Select Files
+                    </button>
+                    <button id="startUploadBtn" class="btn btn-success" disabled>
+                        <i class="fas fa-play"></i>
+                        Start Upload
+                    </button>
+                    <button id="pauseUploadBtn" class="btn btn-warning" disabled>
+                        <i class="fas fa-pause"></i>
+                        Pause
+                    </button>
+                    <button id="resumeUploadBtn" class="btn btn-info" disabled>
+                        <i class="fas fa-play"></i>
+                        Resume
+                    </button>
+                </div>
+            </div>
+
+            <div class="upload-progress">
+                <h3>Upload Progress</h3>
+                <div id="uploadList" class="upload-list">
+                    <!-- Upload items will be added here -->
+                </div>
+            </div>
+
+            <div class="server-info">
+                <h3>Server Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <i class="fas fa-server"></i>
+                        <span>Server: 192.168.18.20</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-folder"></i>
+                        <span>Path: /media/soulstream/</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-network-wired"></i>
+                        <span>Port: 8080</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 SoulStream Media Server</p>
+        </footer>
+    </div>
+
+    <!-- Toast notifications -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html> 
