@@ -129,17 +129,17 @@ fi
 
 # Create Nginx configuration for reverse proxy (optional)
 print_status "Setting up Nginx reverse proxy..."
-cat > /etc/nginx/sites-available/$SERVICE_NAME << EOF
+cat > /etc/nginx/sites-available/$SERVICE_NAME << 'EOF'
 server {
     listen 80;
     server_name _;
 
     location / {
-        proxy_pass http://127.0.0.1:$PORT;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
         
         # For large file uploads
         client_max_body_size 16G;
