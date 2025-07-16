@@ -68,73 +68,83 @@ def get_file_size(file_path):
 @app.route('/')
 def index():
     """Serve the main upload page"""
-    html_content = """
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>SoulStream Media Server</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            body { font-family: Arial, sans-serif; margin: 40px; background: #f0f0f0; }
-            .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-            h1 { color: #333; text-align: center; }
-            .info { background: #e8f4fd; padding: 15px; border-radius: 5px; margin: 20px 0; }
-            .file-list { margin-top: 20px; }
-            .file-item { padding: 10px; border-bottom: 1px solid #eee; }
-            .file-item:last-child { border-bottom: none; }
-            .file-size { color: #666; font-size: 0.9em; }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <h1>🎬 SoulStream Media Server</h1>
-            <div class="info">
-                <strong>Server Status:</strong> Running<br>
-                <strong>Upload Directory:</strong> {{ upload_folder }}<br>
-                <strong>Total Files:</strong> {{ file_count }}<br>
-                <strong>Total Size:</strong> {{ total_size }}
-            </div>
-            <div class="file-list">
-                <h3>Available Media Files:</h3>
-                {% for file in files %}
-                <div class="file-item">
-                    <strong>{{ file.name }}</strong>
-                    <span class="file-size">({{ file.size }})</span>
+    try:
+        # Try to serve the index.html file
+        return send_from_directory('.', 'index.html')
+    except:
+        # Fallback to status page if index.html doesn't exist
+        html_content = """
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>SoulStream Media Server</title>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <style>
+                body { font-family: Arial, sans-serif; margin: 40px; background: #f0f0f0; }
+                .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+                h1 { color: #333; text-align: center; }
+                .info { background: #e8f4fd; padding: 15px; border-radius: 5px; margin: 20px 0; }
+                .file-list { margin-top: 20px; }
+                .file-item { padding: 10px; border-bottom: 1px solid #eee; }
+                .file-item:last-child { border-bottom: none; }
+                .file-size { color: #666; font-size: 0.9em; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h1>🎬 SoulStream Media Server</h1>
+                <div class="info">
+                    <strong>Server Status:</strong> Running<br>
+                    <strong>Upload Directory:</strong> {{ upload_folder }}<br>
+                    <strong>Total Files:</strong> {{ file_count }}<br>
+                    <strong>Total Size:</strong> {{ total_size }}
                 </div>
-                {% endfor %}
+                <div class="file-list">
+                    <h3>Available Media Files:</h3>
+                    {% for file in files %}
+                    <div class="file-item">
+                        <strong>{{ file.name }}</strong>
+                        <span class="file-size">({{ file.size }})</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                <p style="text-align: center; margin-top: 30px; color: #666;">
+                    Use the upload interface to add new media files to your collection.
+                </p>
             </div>
-            <p style="text-align: center; margin-top: 30px; color: #666;">
-                Use the upload interface to add new media files to your collection.
-            </p>
-        </div>
-    </body>
-    </html>
-    """
-    
-    # Get list of files in upload directory
-    files = []
-    total_size = 0
-    file_count = 0
-    
-    if os.path.exists(UPLOAD_FOLDER):
-        for filename in os.listdir(UPLOAD_FOLDER):
-            if allowed_file(filename):
-                file_path = os.path.join(UPLOAD_FOLDER, filename)
-                try:
-                    size = get_file_size(file_path)
-                    files.append({'name': filename, 'size': size})
-                    file_count += 1
-                    # Calculate total size (simplified)
-                    total_size = f"{file_count} files"
-                except OSError:
-                    continue
-    
-    return render_template_string(html_content, 
-                                upload_folder=UPLOAD_FOLDER,
-                                file_count=file_count,
-                                total_size=total_size,
-                                files=files)
+        </body>
+        </html>
+        """
+        
+        # Get list of files in upload directory
+        files = []
+        total_size = 0
+        file_count = 0
+        
+        if os.path.exists(UPLOAD_FOLDER):
+            for filename in os.listdir(UPLOAD_FOLDER):
+                if allowed_file(filename):
+                    file_path = os.path.join(UPLOAD_FOLDER, filename)
+                    try:
+                        size = get_file_size(file_path)
+                        files.append({'name': filename, 'size': size})
+                        file_count += 1
+                        # Calculate total size (simplified)
+                        total_size = f"{file_count} files"
+                    except OSError:
+                        continue
+        
+        return render_template_string(html_content, 
+                                    upload_folder=UPLOAD_FOLDER,
+                                    file_count=file_count,
+                                    total_size=total_size,
+                                    files=files)
+
+@app.route('/<filename>')
+def serve_static(filename):
+    """Serve static files (CSS, JS)"""
+    return send_from_directory('.', filename)
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
