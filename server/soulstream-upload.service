@@ -1,0 +1,16 @@
+[Unit]
+Description=SoulStream Upload Server
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/soulstream-uploader/server
+ExecStart=/usr/bin/python3 upload_server.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target 
